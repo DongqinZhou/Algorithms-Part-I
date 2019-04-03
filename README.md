@@ -1,1 +1,2 @@
-# Algorithms-Part-I
+# Algorithms: Part I
+From Princeton. Hard for me to learn...
