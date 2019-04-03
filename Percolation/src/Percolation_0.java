@@ -13,18 +13,18 @@ public class Percolation_0 {
                 Grid[i][j] = 0;
     }
     public void open(int row, int col){ // open site (row, col) if it is not open already
-        if (row > N | row < 1 | col > N | col < 1)
+        if (row > N || row < 1 || col > N || col < 1)
             throw new IllegalArgumentException("index out of range");
         Grid[row-1][col-1] = 1;   // input index to be the position of each site, while the array index is one less than the position
         // connect this site with other sites around it
     }
     public boolean isOpen(int row, int col){ // is site (row, col) open?
-        if (row > N | row < 1 | col > N | col < 1)
+        if (row > N || row < 1 || col > N || col < 1)
             throw new IllegalArgumentException("index out of range");
         return Grid[row-1][col-1] == 1;
     }
     public boolean isFull(int row, int col){ // is site (row, col) full?
-        if (row > N | row < 1 | col > N | col < 1)
+        if (row > N || row < 1 || col > N || col < 1)
             throw new IllegalArgumentException("index out of range");
 
         return isOpen(row, col) & row == 1;
