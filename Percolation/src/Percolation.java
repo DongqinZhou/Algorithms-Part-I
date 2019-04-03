@@ -1,3 +1,4 @@
+import edu.princeton.cs.algs4.StdOut;
 import edu.princeton.cs.algs4.WeightedQuickUnionUF;
 
 public class Percolation {
@@ -13,13 +14,13 @@ public class Percolation {
         for (int i = 0; i < N; i++)
             for (int j = 0; j < N; j++)
                 Grid_Open[i][j] = 0;
-        Grid = new WeightedQuickUnionUF(N*N);
+        Grid = new WeightedQuickUnionUF(N*N+2);
     }
     private int xyTo1D(int row, int col){  // convert 2D coordinates to 1D index
-        return (row - 1) * N + col - 1;
+        return (row - 1) * N + col;
     }
     private void validate(int p) {
-        if (p < 0 || p >= N)
+        if (p < 0 || p > N)
             throw new IllegalArgumentException("index out of range");
     }
     private boolean isInGrid(int row, int col){
@@ -37,6 +38,10 @@ public class Percolation {
             Grid.union(xyTo1D(row, col), xyTo1D(row-1, col));
         if(isInGrid(row+1, col) && isOpen(row+1, col))
             Grid.union(xyTo1D(row, col), xyTo1D(row+1, col));
+        if (row==1)
+            Grid.union(xyTo1D(row,col),0);
+        if (row==N)
+            Grid.union(xyTo1D(row,col),N*N+1);
         // connect this site with other sites around it
     }
     private boolean isOpen(int row, int col){ // is site (row, col) open?
@@ -59,10 +64,16 @@ public class Percolation {
     }
     public boolean percolates() { // does the system percolate?
 
-        return false;
+        return Grid.connected(0, N*N+1);
     }
 
     public static void main(String[] args){  // test client (optional)
-
+        Percolation test = new Percolation(5);
+        int i = 1;
+        while (!test.percolates()) {
+            test.open(i, 1);
+            i = i + 1;
+        }
+        System.out.println("successfully run");
     }
 }
