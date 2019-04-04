@@ -2,10 +2,7 @@
 
 https://www.coursera.org/learn/algorithms-part1/home/welcome
 
-Percolation:
+Percolation: http://coursera.cs.princeton.edu/algs4/checklists/percolation.html
 
-	http://coursera.cs.princeton.edu/algs4/assignments/percolation.html
-	http://coursera.cs.princeton.edu/algs4/checklists/percolation.html
-	
-	run PercolationStats.java to obtain vacancy threshold;
-	run Percolation.java to test this class;
+1. run PercolationStats.java to obtain vacancy threshold;
+2. run Percolation.java to test this class (or use PercolationVisualizer.java).
