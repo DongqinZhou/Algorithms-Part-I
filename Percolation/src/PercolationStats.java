@@ -35,7 +35,6 @@ public class PercolationStats {
     public double confidenceHi(){
         return mean() + 1.96 * stddev() / Math.sqrt(T);
     }                  // high endpoint of 95% confidence interval
-
     public static void main(String[] args){ // test client (described below)
         StdOut.println("Please input integer n for a n * n grid:");
         int n = StdIn.readInt();

@@ -16,14 +16,14 @@ public class Percolation {
                 Grid_Open[i][j] = 0;
         Grid = new WeightedQuickUnionUF(N*N+2);
     }
-    public int xyTo1D(int row, int col){  // convert 2D coordinates to 1D index
+    private int xyTo1D(int row, int col){  // convert 2D coordinates to 1D index
         return (row - 1) * N + col;
     }
     private void validate(int p) {
-        if (p < 0 || p > N)
+        if (p < 1 || p > N)
             throw new IllegalArgumentException("index out of range");
     }
-    public boolean isInGrid(int row, int col){
+    private boolean isInGrid(int row, int col){
         return row >= 1 && row <= N && col >= 1 && col <= N;
     }
     public void open(int row, int col){ // open site (row, col) if it is not open already
@@ -53,7 +53,7 @@ public class Percolation {
     public boolean isFull(int row, int col){ // is site (row, col) full?
         validate(row);
         validate(col);
-        return isOpen(row, col) && row == 1;
+        return isOpen(row, col) && Grid.connected(xyTo1D(row, col),0);
     }
     public int numberOfOpenSites() { // number of open sites
         int sum = 0;
@@ -76,5 +76,6 @@ public class Percolation {
             i = i + 1;
         }
         StdOut.println("successfully run");
+
     }
 }
