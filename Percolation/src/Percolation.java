@@ -16,35 +16,36 @@ public class Percolation {
                 Grid_Open[i][j] = 0;
         Grid = new WeightedQuickUnionUF(N*N+2);
     }
-    private int xyTo1D(int row, int col){  // convert 2D coordinates to 1D index
+    public int xyTo1D(int row, int col){  // convert 2D coordinates to 1D index
         return (row - 1) * N + col;
     }
     private void validate(int p) {
         if (p < 0 || p > N)
             throw new IllegalArgumentException("index out of range");
     }
-    private boolean isInGrid(int row, int col){
+    public boolean isInGrid(int row, int col){
         return row >= 1 && row <= N && col >= 1 && col <= N;
     }
     public void open(int row, int col){ // open site (row, col) if it is not open already
         validate(row);
         validate(col);
-        Grid_Open[row-1][col-1] = 1;   // input index to be the position of each site, while the array index is one less than the position
-        if(isInGrid(row, col+1) && isOpen(row, col+1))
-            Grid.union(xyTo1D(row, col), xyTo1D(row, col+1));
-        if(isInGrid(row, col-1) && isOpen(row, col-1))
-            Grid.union(xyTo1D(row, col), xyTo1D(row, col-1));
-        if(isInGrid(row-1, col) && isOpen(row-1, col))
-            Grid.union(xyTo1D(row, col), xyTo1D(row-1, col));
-        if(isInGrid(row+1, col) && isOpen(row+1, col))
-            Grid.union(xyTo1D(row, col), xyTo1D(row+1, col));
-        if (row==1)
-            Grid.union(xyTo1D(row,col),0);
-        if (row==N)
-            Grid.union(xyTo1D(row,col),N*N+1);
-        // connect this site with other sites around it
+        if (!isOpen(row, col)){
+            Grid_Open[row - 1][col - 1] = 1;   // input index to be the position of each site, while the array index is one less than the position
+            if (isInGrid(row, col + 1) && isOpen(row, col + 1)) // connect this site with other sites around it
+                Grid.union(xyTo1D(row, col), xyTo1D(row, col + 1));
+            if (isInGrid(row, col - 1) && isOpen(row, col - 1))
+                Grid.union(xyTo1D(row, col), xyTo1D(row, col - 1));
+            if (isInGrid(row - 1, col) && isOpen(row - 1, col))
+                Grid.union(xyTo1D(row, col), xyTo1D(row - 1, col));
+            if (isInGrid(row + 1, col) && isOpen(row + 1, col))
+                Grid.union(xyTo1D(row, col), xyTo1D(row + 1, col));
+            if (row == 1)
+                Grid.union(xyTo1D(row, col), 0);
+            if (row == N)
+                Grid.union(xyTo1D(row, col), N * N + 1);
+        }
     }
-    private boolean isOpen(int row, int col){ // is site (row, col) open?
+    public boolean isOpen(int row, int col){ // is site (row, col) open?
         validate(row);
         validate(col);
         return Grid_Open[row-1][col-1] == 1;
@@ -74,6 +75,6 @@ public class Percolation {
             test.open(i, 1);
             i = i + 1;
         }
-        System.out.println("successfully run");
+        StdOut.println("successfully run");
     }
 }
