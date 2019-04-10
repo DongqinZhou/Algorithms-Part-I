@@ -1,5 +1,4 @@
 import edu.princeton.cs.algs4.StdOut;
-
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
@@ -28,34 +27,45 @@ public class Deque<Item> implements Iterable<Item> {
     public void addFirst(Item item){                            // add the item to the front
         if (item == null)
             throw new IllegalArgumentException("cannot add null");
-        if (size == 0){
-            first = new Node();
-            first.item = item;
-            first.next = last;
-            size++;
-        }
-        else {
+        if(first == null)
+        {
             Node oldfirst = first;
             first = new Node();
             first.item = item;
             first.next = oldfirst;
-            size++;
         }
+        else{
+            Node oldfirst = first;
+            first = new Node();
+            first.item = item;
+            first.next = oldfirst;
+            oldfirst.previous = first;
+        }
+        size++;
+
     }
     public void addLast(Item item)   {                  // add the item to the end
         if (item == null)
             throw new IllegalArgumentException("cannot add null");
-        if (size ==0){
+        if (last == null){
             last = new Node();
             last.item = item;
-            last.previous = first;
+            last.next = null;
+            Node currentfirst = first;
+            if (currentfirst != null)
+                while(currentfirst.next != null)
+                    currentfirst = currentfirst.next;
+            last.previous = currentfirst;
+            currentfirst.next = last;
             size++;
         }
         else{
             Node oldlast = last;
             last = new Node();
             last.item = item;
+            last.next = oldlast.next;
             last.previous = oldlast;
+            oldlast.next = last;
             size++;
         }
     }
@@ -67,7 +77,7 @@ public class Deque<Item> implements Iterable<Item> {
         size--;
         return item;
     }
-    public Item removeLast(){               // remove and return the item from the end
+    public Item removeLast(){               // remove and return the item from the end, which means we don't have to maintain a null at front
         if (isEmpty())
             throw new NoSuchElementException("deque is empty, cannot remove");
         Item item = last.item;
@@ -92,7 +102,11 @@ public class Deque<Item> implements Iterable<Item> {
         Deque<Integer> deque = new Deque<>();
         deque.addFirst(15);
         deque.addLast(18);
-        StdOut.println(deque.removeFirst());
-        StdOut.println(deque.removeFirst());
+        deque.addLast(17);
+        deque.addFirst(16);
+        int size = deque.size();
+        for (int i = 0; i < size; i++)
+            StdOut.println(deque.removeLast());
+
     }
 }
