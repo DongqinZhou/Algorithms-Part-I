@@ -1,0 +1,13 @@
+I've made a great deal of mistakes while working on this project. Here are a few things for future reference.
+
+1. Deque should have the same structure when adding its first element, no matter addFirst/addLast.
+
+2. Thing through before implementing. It's a lot more convenient to implement RandomizedQueue with resizing array instead of linked list.
+
+3. Iterator is used to iterate through ALL elements of a set and is necessary to implement before using 'foreach'.
+
+4. Read from command-line argument is different from reading from console... IDE also has a way to run a file similar to running from command-line.
+
+
+
+
