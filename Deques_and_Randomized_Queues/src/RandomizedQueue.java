@@ -8,6 +8,7 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
     private Item[] q;
     private int head, tail;
 
+
     public RandomizedQueue(){
         head = 0;
         tail = 0;
@@ -22,17 +23,20 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
     public void enqueue(Item item){
         if (item == null)
             throw new IllegalArgumentException("cannot enqueue null");
-        if(size() == q.length)
-            resize(2 * q.length);
-        if(tail == q.length && size() < q.length)
-            reshape();
+        if (tail == q.length)
+            if (size() == q.length)
+                resize(2 * q.length);
+            else
+                reshape();
         q[tail++] = item;
     }           // add the item
     private void resize(int capacity){
         Item[] copy = (Item[]) new Object[capacity];
-        for(int i = 0; i < tail; i++)
+        for(int i = 0; i < size(); i++)
             copy[i] = q[head + i];
         q = copy;
+        head = 0;
+        tail = size();
     }
     private void reshape(){
         Item[] copy = q;
@@ -53,64 +57,35 @@ public class RandomizedQueue<Item> implements Iterable<Item> {
         if (isEmpty())
             throw new NoSuchElementException("empty queue");
         int s = StdRandom.uniform(size());
-        return q[tail + s];
+        return q[head + s];
     }                     // return a random item (but do not remove it)
     public Iterator<Item> iterator()  {return new RandomizedQueueIterator();}        // return an independent iterator over items in random order
     private class RandomizedQueueIterator implements Iterator<Item>{
-        int i = StdRandom.uniform(size());
-        public boolean hasNext()  { return true; }
+        private int i = 0;
+        private Item[] temp = (Item[]) new Object[size()];
+        public RandomizedQueueIterator(){
+            for(int j = 0; j < size(); j++)
+                temp[j] = q[j];
+            StdRandom.shuffle(temp);
+        }
+        public boolean hasNext()  { return i < size(); }
         public void remove()      { throw new UnsupportedOperationException("baby don't do this to me");  }
-
         public Item next() {
             if (!hasNext()) throw new NoSuchElementException("no next item");
-            return q[head + i];
+            return temp[i++];
         }
     }
     public static void main(String[] args){
         RandomizedQueue<Integer> rq = new RandomizedQueue<>();
-        rq.enqueue(15);
-        rq.enqueue(18);
-        rq.enqueue(17);
-        rq.enqueue(16);
+        int n = 10;
+        for (int i = 0; i < n; i++){
+            rq.enqueue(i);
+        }
         int size = rq.size();
-        for(int i = 0; i < size; i++)
-            StdOut.println(rq.sample());
+        for (int a : rq)
+            StdOut.println(a);
     }   // unit testing (optional)
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
