@@ -24,6 +24,7 @@ public class BruteCollinearPoints {
                         if (points[i].slopeOrder().compare(points[j], points[m]) == 0 && points[i].slopeOrder().compare(points[j], points[n]) == 0){
                             int smallend = 0;
                             int bigend = 0;
+
                             if (!(points[i].compareTo(points[j]) > 0) && !(points[i].compareTo(points[m]) > 0) && !(points[i].compareTo(points[n]) > 0))
                                 smallend = i;
                             if (!(points[j].compareTo(points[i]) > 0) && !(points[j].compareTo(points[m]) > 0) && !(points[j].compareTo(points[n]) > 0))
