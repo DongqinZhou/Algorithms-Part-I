@@ -25,6 +25,7 @@ public class FastCollinearPoints {
         LS = new LineSegment[numberofpoints * (numberofpoints - 1) / 2];
         points1 = new Point[points.length];
         Point[] smallends = new Point[points.length];
+        Point[] bigends = new Point[points.length];
         for (int i = 0; i < numberofpoints; i++)
             points1[i] = points[i];
         for(int i = 0; i < numberofpoints; i++){
@@ -48,13 +49,15 @@ public class FastCollinearPoints {
                             if (points[n].compareTo(points[bigend]) > 0)
                                 bigend = n;
                         }
-                        if (k == 0)
+                        if (k == 0) // a smallend can be in the array more than once...
                         {
                             smallends[k] = points[smallend];
+                            bigends[k] = points[bigend];
                             LS[k++] = new LineSegment(points[smallend], points[bigend]);
                         }
-                        else if(checkinpoints(points[smallend], smallends) == 0) {
+                        else if(checkinpoints(points[smallend], points[bigend], smallends, bigends) == 0) {
                             smallends[k] = points[smallend];
+                            bigends[k] = points[bigend];
                             LS[k++] = new LineSegment(points[smallend], points[bigend]);
                         }
                 }
@@ -63,11 +66,9 @@ public class FastCollinearPoints {
                 }
         }
     }     // finds all line segments containing 4 or more points
-    private int checkinpoints(Point point, Point[] points) {
-        if (points == null)
-            return 0;
+    private int checkinpoints(Point small, Point big, Point[] smalls, Point[] bigs) {
         for (int i = 0; i < k; i++)
-            if (point.compareTo(points[i]) == 0)
+            if (small.compareTo(smalls[i]) == 0 && big.compareTo(bigs[i]) == 0)
                 return 1;
         return 0;
     }
