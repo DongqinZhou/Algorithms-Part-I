@@ -29,41 +29,37 @@ public class FastCollinearPoints {
         for (int i = 0; i < numberofpoints; i++)
             points1[i] = points[i];
         for(int i = 0; i < numberofpoints; i++){
-            /*
-            double[] slopetothis = new double[numberofpoints - 1];
-            for (int j = 0; j < numberofpoints; j++)
-                slopetothis[j] = points[i].slopeTo(points[j]);
-                */
-            Arrays.sort(points, 0, numberofpoints-1, points1[i].slopeOrder());
-            for (int j = 1; j < numberofpoints; j++)
-                for (int m = j+1; m < numberofpoints; m++)
-                {
-                    if(points1[i].slopeOrder().compare(points[j], points[m]) == 0)
-                        continue;
-                    else if((m - j) >= 3){
-                        int smallend = 0;
-                        int bigend = 0;
-                        for (int n = j; n < m; n++){
-                            if (points[n].compareTo(points[smallend]) < 0)
-                                smallend = n;
-                            if (points[n].compareTo(points[bigend]) > 0)
-                                bigend = n;
-                        }
-                        if (k == 0) // a smallend can be in the array more than once...
-                        {
-                            smallends[k] = points[smallend];
-                            bigends[k] = points[bigend];
-                            LS[k++] = new LineSegment(points[smallend], points[bigend]);
-                        }
-                        else if(checkinpoints(points[smallend], points[bigend], smallends, bigends) == 0) {
-                            smallends[k] = points[smallend];
-                            bigends[k] = points[bigend];
-                            LS[k++] = new LineSegment(points[smallend], points[bigend]);
-                        }
+            Arrays.sort(points,  points1[i].slopeOrder());
+            for (int j = 1; j < numberofpoints-2; ) {
+                int m = j+1;
+                while(m < numberofpoints && points1[i].slopeOrder().compare(points[j], points[m]) == 0)
+                    m++;
+                if ((m - j) < 3){
+                    j = m;
                 }
-                    else
-                        break;
+                else{
+                    int smallend = 0;
+                    int bigend = 0;
+                    for (int n = j; n < m; n++) {
+                        if (points[n].compareTo(points[smallend]) < 0)
+                            smallend = n;
+                        if (points[n].compareTo(points[bigend]) > 0)
+                            bigend = n;
+                    }
+                    if (k == 0) // a smallend can be in the array more than once...
+                    {
+                        smallends[k] = points[smallend];
+                        bigends[k] = points[bigend];
+                        LS[k++] = new LineSegment(points[smallend], points[bigend]);
+                    }
+                    else if(checkinpoints(points[smallend], points[bigend], smallends, bigends) == 0) {
+                        smallends[k] = points[smallend];
+                        bigends[k] = points[bigend];
+                        LS[k++] = new LineSegment(points[smallend], points[bigend]);
+                    }
+                    j = m;
                 }
+            }
         }
     }     // finds all line segments containing 4 or more points
     private int checkinpoints(Point small, Point big, Point[] smalls, Point[] bigs) {
