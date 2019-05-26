@@ -1,3 +1,2 @@
 # Algorithms: Part I
 
-Finally I am learning CS knowledge...
