@@ -1,5 +1,6 @@
 import edu.princeton.cs.algs4.StdOut;
 
+import java.util.ArrayList;
 import java.util.Objects;
 
 public class Board {
@@ -35,7 +36,7 @@ public class Board {
                     int j_should = Block[i][j] % dimension();
                     M += Math.abs(j_should - j )+ Math.abs(i_should - i) - 2;
                 }
-        return 0;
+        return M;
     }                 // sum of Manhattan distances between blocks and goal
     public boolean isGoal(){
         for (int i = 0; i < dimension(); i++)
@@ -46,7 +47,15 @@ public class Board {
                     return false;
         return true;
     }                // is this board the goal board?
-    public Board twin(){
+    private boolean isInboard(int i, int j){
+        return (i >= 0 && i <dimension()) && (j >= 0 && j < dimension());
+    }
+    private void exchange(int i, int j, int m, int n){
+        int temp = Block[i][j];
+        Block[i][j] = Block[m][n];
+        Block[m][n] = temp;
+    }
+    public Board twin(){  // hard code the blocks change
         Board Twin = new Board(this.Block);
         int i = 1;
         int j = 0;
@@ -55,16 +64,12 @@ public class Board {
         int temp;
         if(Twin.Block[i][j] == 0){
             j++;
-            temp = Twin.Block[i][j];
-            Twin.Block[i][j] = Twin.Block[i_twin][j_twin];
-            Twin.Block[i_twin][j_twin] = temp;
+            Twin.exchange(i,j,i_twin,j_twin);
             return Twin;
         }
         if (Twin.Block[i_twin][j_twin] == 0)
             j--;
-            temp = Twin.Block[i][j];
-            Twin.Block[i][j] = Twin.Block[i_twin][j_twin];
-            Twin.Block[i_twin][j_twin] = temp;
+            Twin.exchange(i,j,i_twin,j_twin);
             return Twin;
     }                    // a board that is obtained by exchanging any pair of blocks
     public boolean equals(Object y){  // https://www.sitepoint.com/implement-javas-equals-method-correctly/
@@ -78,10 +83,42 @@ public class Board {
         return Objects.equals(Block, y_board.Block);
     }        // does this board equal y?
     public Iterable<Board> neighbors(){
-        
-
+        ArrayList<Board> Ns = new ArrayList<Board>();
+        for (int i = 0; i < dimension(); i++)
+            for(int j = 0; j < dimension(); j++)
+                if (Block[i][j] != 0)
+                    continue;
+                else{
+                    if (isInboard(i+1,j))
+                    {
+                        Board neighbor = new Board(this.Block);
+                        neighbor.exchange(i,j,i+1,j);
+                        Ns.add(neighbor);
+                    }
+                    if (isInboard(i,j+1))
+                    {
+                        Board neighbor = new Board(this.Block);
+                        neighbor.exchange(i,j,i,j+1);
+                        Ns.add(neighbor);
+                    }
+                    if (isInboard(i-1,j))
+                    {
+                        Board neighbor = new Board(this.Block);
+                        neighbor.exchange(i,j,i-1,j);
+                        Ns.add(neighbor);
+                    }
+                    if (isInboard(i, j-1))
+                    {
+                        Board neighbor = new Board(this.Block);
+                        neighbor.exchange(i,j,i,j-1);
+                        Ns.add(neighbor);
+                    }
+                }
+        return  Ns;
     }     // all neighboring boards
-    //public String toString()               // string representation of this board (in the output format specified below)
+    public String toString(){
+
+    }               // string representation of this board (in the output format specified below)
 
     public static void main(String[] args){
 
