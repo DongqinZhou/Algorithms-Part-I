@@ -58,23 +58,14 @@ public class Board {
         Block[i][j] = Block[m][n];
         Block[m][n] = temp;
     }
-    public Board twin(){  // hard code the blocks change
+    public Board twin(){
         Board Twin = new Board(this.Block);
-        int i = 1;
-        int j = 0;
-        int i_twin = 0;
-        int j_twin = 2;
-        int temp;
-        if(Twin.Block[i][j] == 0){
-            j++;
-            Twin.exchange(i,j,i_twin,j_twin);
-            return Twin;
-        }
-        if (Twin.Block[i_twin][j_twin] == 0)
-            j--;
-            Twin.exchange(i,j,i_twin,j_twin);
-            return Twin;
-    }                    // a board that is obtained by exchanging any pair of blocks
+        if (Twin.Block[0][0] != 0 && Twin.Block[0][1] != 0)
+            Twin.exchange(0,0,0,1);
+        else
+            Twin.exchange(1,0,1,1);
+        return Twin;
+    }                // a board that is obtained by exchanging any pair of blocks
     public boolean equals(Object y){  // https://www.sitepoint.com/implement-javas-equals-method-correctly/
         if (this == y)
             return  true;
