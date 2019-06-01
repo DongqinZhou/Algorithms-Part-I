@@ -5,50 +5,53 @@ import java.util.Objects;
 
 public class Board {
     private int[][] Block;
+    private final int N;
 
     public Board(int[][] blocks){
-        for (int i = 0; i < blocks.length; i++)
-            for (int j = 0; j < blocks[i].length; j++)
+        N = blocks.length;
+        Block = new int[N][N];
+        for (int i = 0; i < N; i++)
+            for (int j = 0; j < N; j++)
                 Block[i][j] = blocks[i][j];
     }           // construct a board from an n-by-n array of blocks
                 // (where blocks[i][j] = block in row i, column j)
     public int dimension(){
-        return Block.length;
+        return N;
     }                 // board dimension n
     public int hamming(){
         int H = 0;
-        for (int i = 0; i < dimension(); i++)
-            for (int j = 0; j < dimension(); j++)
+        for (int i = 0; i < N; i++)
+            for (int j = 0; j < N; j++)
                 if(Block[i][j] == 0)
                     continue;
-                else if(Block[i][j] != (i * dimension() + j + 1))
+                else if(Block[i][j] != (i * N + j + 1))
                     H += 1;
         return H;
     }                   // number of blocks out of place
     public int manhattan(){
         int M = 0;
-        for (int i = 0; i < dimension(); i++)
-            for (int j = 0; j < dimension(); j++)
+        for (int i = 0; i < N; i++)
+            for (int j = 0; j < N; j++)
                 if(Block[i][j] == 0)
                     continue;
-                else if(Block[i][j] != (i * dimension() + j + 1)){
-                    int i_should = (int)Math.ceil(Block[i][j] / dimension());
-                    int j_should = Block[i][j] % dimension();
-                    M += Math.abs(j_should - j )+ Math.abs(i_should - i) - 2;
+                else if(Block[i][j] != (i * N + j + 1)){
+                    int i_should = (int)Math.ceil(Block[i][j] * 1.0 / N);
+                    int j_should = (Block[i][j] - 1) % N + 1 ;
+                    M += Math.abs(j_should - j - 1)+ Math.abs(i_should - i - 1) ;
                 }
         return M;
     }                 // sum of Manhattan distances between blocks and goal
     public boolean isGoal(){
-        for (int i = 0; i < dimension(); i++)
-            for (int j = 0; j < dimension(); j++)
+        for (int i = 0; i < N; i++)
+            for (int j = 0; j < N; j++)
                 if(Block[i][j] == 0)
                     continue;
-                else if(Block[i][j] != (i * dimension() + j + 1))
+                else if(Block[i][j] != (i * N + j + 1))
                     return false;
         return true;
     }                // is this board the goal board?
     private boolean isInboard(int i, int j){
-        return (i >= 0 && i <dimension()) && (j >= 0 && j < dimension());
+        return (i >= 0 && i <N) && (j >= 0 && j < N);
     }
     private void exchange(int i, int j, int m, int n){
         int temp = Block[i][j];
@@ -84,8 +87,8 @@ public class Board {
     }        // does this board equal y?
     public Iterable<Board> neighbors(){
         ArrayList<Board> Ns = new ArrayList<Board>();
-        for (int i = 0; i < dimension(); i++)
-            for(int j = 0; j < dimension(); j++)
+        for (int i = 0; i < N; i++)
+            for(int j = 0; j < N; j++)
                 if (Block[i][j] != 0)
                     continue;
                 else{
@@ -116,11 +119,26 @@ public class Board {
                 }
         return  Ns;
     }     // all neighboring boards
-    public String toString(){
-
+    public String toString() {
+        StringBuilder s = new StringBuilder();
+        s.append(N + "\n");
+        for (int i = 0; i < N; i++) {
+            for (int j = 0; j < N; j++) {
+                s.append(String.format("%2d ", Block[i][j]));
+            }
+            s.append("\n");
+        }
+        return s.toString();
     }               // string representation of this board (in the output format specified below)
 
     public static void main(String[] args){
-
+        int[][] arr = {{2,3,1},{4,7,8},{0,5,6}};
+        Board board = new Board(arr);
+        StdOut.print(board.toString());
+        StdOut.println(board.isGoal());
+        StdOut.println(board.hamming());
+        StdOut.println(board.manhattan());
+        StdOut.println(board.twin());
+        StdOut.println(board.neighbors());
     } // unit tests (not graded)
 }
