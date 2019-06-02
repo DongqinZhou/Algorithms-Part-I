@@ -2,3 +2,4 @@
 2. Could hard code a little given that requirements are met.
 3. Discussion forum and checklist are extremely helpful!
 4. To compare self-defined variables, implement Comparable interface.
+5. For a function that demands an interable return, use a variable that is iterable rather than implement it from scratch.
