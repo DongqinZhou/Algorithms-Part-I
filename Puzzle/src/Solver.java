@@ -2,7 +2,6 @@ import edu.princeton.cs.algs4.In;
 import edu.princeton.cs.algs4.MinPQ;
 import edu.princeton.cs.algs4.StdOut;
 
-import javax.crypto.SealedObject;
 import java.util.ArrayList;
 import java.util.Comparator;
 
@@ -25,9 +24,18 @@ public class Solver {
         public int Manhattan(){
             return curr.manhattan() + moves;
         }
+        public int Hamming(){
+            return curr.hamming() + moves;
+        }
         public int compareTo(SearchNode that){
-            if (this.curr.equals(that.curr))
-                return 0;
+            if (this.curr.equals(that.curr)){
+                if (this.Hamming() < that.Hamming())
+                    return -1;
+                else if (this.Hamming() > that.Hamming())
+                    return 1;
+                else
+                    return 0;
+            }
             if (this.Manhattan() < that.Manhattan())
                 return -1;
             else
@@ -48,32 +56,30 @@ public class Solver {
             SearchNode Min = pq.delMin();
             SearchNode Min_twin = pq_twin.delMin();
             if (Min.curr.isGoal()){
+                Solution = Min;
                 Moves_twin += 100;
                 break;
             }
             if (Min_twin.curr.isGoal()){
+                Solution = Min_twin;
                 Moves += 100;
                 break;
             }
             Moves += 1;
             Moves_twin += 1;
             for (Board b : Min.curr.neighbors()) {
-                if (b.equals(Min.pred))
+                if (Moves != 1 && b.equals(Min.pred.curr))
                     continue;
                 SearchNode Curr = new SearchNode(Min, b, Moves);
                 pq.insert(Curr);
             }
             for (Board b : Min_twin.curr.neighbors()) {
-                if (b.equals(Min_twin.pred))
+                if (Moves_twin != 1 && b.equals(Min_twin.pred.curr))
                     continue;
                 SearchNode Curr = new SearchNode(Min_twin, b, Moves_twin);
                 pq_twin.insert(Curr);
             }
         }
-        if (Moves < Moves_twin)
-            Solution = pq.min();
-        else
-            Solution = pq_twin.min();
     }           // find a solution to the initial board (using the A* algorithm)
     public boolean isSolvable(){
         if (Moves_twin < Moves)
@@ -82,19 +88,23 @@ public class Solver {
             return true;
     }            // is the initial board solvable?
     public int moves(){
-        if (Moves < Moves_twin)
-            return Moves;
+        if (isSolvable())
+            return Solution.moves;
         else
             return -1;
     }                     // min number of moves to solve initial board; -1 if unsolvable
     public Iterable<Board> solution(){
         ArrayList<Board> S = new ArrayList<Board>();
+        ArrayList<Board> SS = new ArrayList<Board>();
         SearchNode s = Solution;
         while (!s.curr.equals(Initial_Board)){
             S.add(s.curr);
             s = s.pred;
         }
-        return S;
+        S.add(Initial_Board);
+        for(int i = S.size() - 1; i >= 0; i--)
+            SS.add(S.get(i));
+        return SS;
     }      // sequence of boards in a shortest solution; null if unsolvable
     public static void main(String[] args){
         // create initial board from file

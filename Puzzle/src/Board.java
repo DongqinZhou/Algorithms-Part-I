@@ -74,7 +74,13 @@ public class Board {
         if(getClass() != y.getClass())
             return false;
         Board y_board = (Board) y;
-        return Objects.equals(Block, y_board.Block);
+        if (N != y_board.N)
+            return false;
+        for (int i = 0; i < N; i++)
+            for (int j = 0; j < N; j++)
+                if (Block[i][j] != y_board.Block[i][j])
+                    return false;
+        return true;
     }        // does this board equal y?
     public Iterable<Board> neighbors(){
         ArrayList<Board> Ns = new ArrayList<Board>();
