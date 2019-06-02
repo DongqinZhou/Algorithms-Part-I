@@ -70,13 +70,13 @@ public class Solver {
             for (Board b : Min.curr.neighbors()) {
                 if (Moves != 1 && b.equals(Min.pred.curr))
                     continue;
-                SearchNode Curr = new SearchNode(Min, b, Moves);
+                SearchNode Curr = new SearchNode(Min, b, Min.moves + 1);
                 pq.insert(Curr);
             }
             for (Board b : Min_twin.curr.neighbors()) {
                 if (Moves_twin != 1 && b.equals(Min_twin.pred.curr))
                     continue;
-                SearchNode Curr = new SearchNode(Min_twin, b, Moves_twin);
+                SearchNode Curr = new SearchNode(Min_twin, b, Min_twin.moves + 1);
                 pq_twin.insert(Curr);
             }
         }

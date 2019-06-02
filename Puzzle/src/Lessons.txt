@@ -1,0 +1,4 @@
+1. Pre-compute frequently-used values and store them in some variables.
+2. Could hard code a little given that requirements are met.
+3. Discussion forum and checklist are extremely helpful!
+4. To compare self-defined variables, implement Comparable interface.
