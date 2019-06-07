@@ -1,7 +1,6 @@
 import edu.princeton.cs.algs4.*;
 
 import java.util.ArrayList;
-import java.util.TreeSet;
 
 public class PointSET {
     private SET<Point2D> set;
@@ -20,7 +19,6 @@ public class PointSET {
             throw new IllegalArgumentException("argument cannot be null");
         if (!set.contains(p))
             set.add(p);
-        return;
     }              // add the point to the set (if it is not already in the set)
     public           boolean contains(Point2D p){
         if (p == null)
