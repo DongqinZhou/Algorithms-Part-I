@@ -1,5 +1,4 @@
-import edu.princeton.cs.algs4.Point2D;
-import edu.princeton.cs.algs4.RectHV;
+import edu.princeton.cs.algs4.*;
 
 import java.util.ArrayList;
 
@@ -22,17 +21,12 @@ public class KdTree {
             this.rect = rect;
         }
     }
-
     public         KdTree(){
         N = 0;
         root = null;
     }                               // construct an empty set of points
-    public           boolean isEmpty(){
-        return N == 0;
-    }                      // is the set empty?
-    public               int size(){
-        return N;
-    }                         // number of points in the set
+    public           boolean isEmpty(){ return N == 0;  }                      // is the set empty?
+    public               int size(){ return N;    }                         // number of points in the set
     public              void insert(Point2D p){
         if (p == null)
             throw new IllegalArgumentException("argument cannot be null");
@@ -53,16 +47,36 @@ public class KdTree {
         }
         level++;
         if (level % 2 != 0) // odd level, compare x coordinates
-            if (p.x() < x.p.x())
+            if (p.x() < x.p.x()) {
                 x.lb = insert(x.lb, p, level);
-            else
+                x.lb.rect = buildoddrect(x.rect, x.p, p);
+            }
+            else  {
                 x.rt = insert(x.rt, p, level);
+                x.rt.rect = buildoddrect(x.rect, x.p, p);
+            }
         else
-            if (p.y() < x.p.y())
+            if (p.y() < x.p.y()){
                 x.lb = insert(x.lb, p, level);
-            else
+                x.lb.rect = buildevenrect(x.rect, x.p, p);
+            }
+            else{
                 x.rt = insert(x.rt, p, level);
+                x.rt.rect = buildevenrect(x.rect, x.p, p);
+            }
         return  x;
+    }
+    private RectHV buildoddrect(RectHV Rect, Point2D curr, Point2D p){
+        if (p.x() < curr.x())
+            return new RectHV(Rect.xmin(), Rect.ymin(), curr.x(), Rect.ymax());
+        else
+            return new RectHV(curr.x(), Rect.ymin(), Rect.xmax(), Rect.ymax());
+    }
+    private RectHV buildevenrect(RectHV Rect, Point2D curr, Point2D p){
+        if (p.y() < curr.y())
+            return new RectHV(Rect.xmin(), Rect.ymin(), Rect.xmax(), curr.y());
+        else
+            return new RectHV(Rect.xmin(), curr.y(), Rect.xmax(), Rect.ymax());
     }
     public           boolean contains(Point2D p){
         int level = 0;
@@ -88,7 +102,6 @@ public class KdTree {
                 return p.x() == x.p.x();
     }
     public              void draw(){
-
     }                         // draw all points to standard draw
     public Iterable<Point2D> range(RectHV rect){
         return range(root, rect);
@@ -108,18 +121,64 @@ public class KdTree {
         return all_points;
     }
     public           Point2D nearest(Point2D p){
-        return nearest(root, p);
+        Node nearest_node = root;
+        int level = 0;
+        return nearest(root, p, root, level);
     }             // a nearest neighbor in the set to point p; null if the set is empty
-    private Point2D nearest(Node x, Point2D p){
-        //if (x.lb == null && )
-          //  return x.p;
-        double nearest_distance = x.p.distanceTo(p);
-        if (x.rt.rect.contains(p) || x.lb.rect.distanceTo(p) > nearest_distance)
-            return nearest(x.rt, p);
-        if (x.lb.rect.contains(p) || x.rt.rect.distanceTo(p) > nearest_distance)
-            return nearest(x.lb, p);
+    private Point2D nearest(Node x, Point2D p, Node Nearest, int level){
+        if (x.p.distanceTo(p) < Nearest.p.distanceTo(p))
+            Nearest = x;
+        level++;
+        if (level % 2 != 0 && x.lb != null && x.p.x() > p.x()){
+            Point2D Near = nearest(x.lb, p, Nearest, level);
+            if (x.rt == null || Near.distanceTo(p) < x.rt.rect.distanceTo(p))
+                return Near;
+            else
+                return nearest(x.rt, p, Nearest, level);
+        }
+        else if (level % 2 != 0 && x.rt != null && x.p.x() < p.x()){
+            Point2D Near = nearest(x.rt, p, Nearest, level);
+            if (x.lb == null || Near.distanceTo(p) < x.lb.rect.distanceTo(p))
+                return Near;
+            else
+                return nearest(x.lb, p, Nearest, level);
+        }
+        else if (level % 2 == 0 && x.lb != null && x.p.y() > p.y()){
+            Point2D Near = nearest(x.lb, p, Nearest, level);
+            if (x.rt == null || Near.distanceTo(p) < x.rt.rect.distanceTo(p))
+                return Near;
+            else
+                return nearest(x.rt, p, Nearest, level);
+        }
+        else if (level % 2 == 0 && x.rt != null && x.p.y() < p.y()){
+            Point2D Near = nearest(x.rt, p, Nearest, level);
+            if (x.lb == null || Near.distanceTo(p) < x.lb.rect.distanceTo(p))
+                return Near;
+            else
+                return nearest(x.lb, p, Nearest, level);
+        }
+        else
+            return Nearest.p;
     }
     public static void main(String[] args){
-
+        KdTree kdtree = new KdTree();
+        In in = new In(args[0]);
+        for (int i = 0; i < 10; i++){
+            double x = in.readDouble();
+            double y = in.readDouble();
+            Point2D p = new Point2D(x,y);
+            kdtree.insert(p);
+        }
+        double x = 0.08;
+        double y = 0.610;
+        Point2D Point = new Point2D(x,y);
+        Point2D nearest_point = kdtree.nearest(Point);
+        StdOut.println(nearest_point.x());
+        StdOut.println(nearest_point.y());
+        RectHV Rect = new RectHV(0.3,0.4,0.425,0.8);
+        for (Point2D p : kdtree.range(Rect)){
+            StdOut.println(p.x());
+            StdOut.println(p.y());
+        }
     }                  // unit testing of the methods (optional)
 }

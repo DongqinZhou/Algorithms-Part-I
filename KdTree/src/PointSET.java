@@ -5,15 +5,9 @@ import java.util.ArrayList;
 public class PointSET {
     private SET<Point2D> set;
 
-    public         PointSET(){
-        set = new SET<Point2D>();
-    }                               // construct an empty set of points
-    public           boolean isEmpty(){
-        return set.isEmpty();
-    }                      // is the set empty?
-    public               int size(){
-        return set.size();
-    }                         // number of points in the set
+    public         PointSET(){        set = new SET<Point2D>();    }                               // construct an empty set of points
+    public           boolean isEmpty(){        return set.isEmpty();    }                      // is the set empty?
+    public               int size(){        return set.size();    }                         // number of points in the set
     public              void insert(Point2D p){
         if (p == null)
             throw new IllegalArgumentException("argument cannot be null");
