@@ -1,5 +1,9 @@
-import edu.princeton.cs.algs4.*;
+import edu.princeton.cs.algs4.In;
+import edu.princeton.cs.algs4.Point2D;
+import edu.princeton.cs.algs4.RectHV;
+import edu.princeton.cs.algs4.StdOut;
 
+import edu.princeton.cs.algs4.StdDraw;
 import java.util.ArrayList;
 
 
@@ -86,23 +90,54 @@ public class KdTree {
         if (x == null)
             return false;
         level++;
+        if (x.p.equals(p))
+            return true;
         if (level % 2 != 0)
             if (p.x() < x.p.x())
                 return contains(x.lb, p, level);
-            else if (p.x() > x.p.x())
-                return  contains(x.rt, p, level);
             else
-                return p.y() == x.p.y();
+                return  contains(x.rt, p, level);
         else
             if (p.y() < x.p.y())
                 return contains(x.lb, p, level);
-            else if (p.y() > x.p.y())
-                return  contains(x.rt, p, level);
             else
-                return p.x() == x.p.x();
+                return  contains(x.rt, p, level);
     }
     public              void draw(){
+        //StdDraw.setScale(0, 1);
+
+        StdDraw.setPenColor(StdDraw.BLACK);
+        StdDraw.setPenRadius();
+        Big_Rect.draw();
+        int level = 0;
+        draw(root, Big_Rect, level);
     }                         // draw all points to standard draw
+    private void draw(Node x, RectHV rect, int level) {
+        if (x == null)
+            return;
+        StdDraw.setPenColor(StdDraw.BLACK);
+        StdDraw.setPenRadius(0.01);
+        x.p.draw();
+
+        level++;
+        Point2D min, max;
+        if (level % 2 != 0){
+            StdDraw.setPenColor(StdDraw.RED);
+            min = new Point2D(x.p.x(), rect.ymin());
+            max = new Point2D(x.p.x(), rect.ymax());
+        }
+        else {
+            StdDraw.setPenColor(StdDraw.BLUE);
+            min = new Point2D(rect.xmin(), x.p.y());
+            max = new Point2D(rect.xmax(), x.p.y());
+        }
+        StdDraw.setPenRadius();
+        min.drawTo(max);
+        if (x.lb != null)
+            draw(x.lb, x.lb.rect, level);
+        if (x.rt != null)
+            draw(x.rt, x.rt.rect, level);
+    }
     public Iterable<Point2D> range(RectHV rect){
         return range(root, rect);
     }             // all points that are inside the rectangle (or on the boundary)
@@ -121,44 +156,48 @@ public class KdTree {
         return all_points;
     }
     public           Point2D nearest(Point2D p){
+        if (p == null)
+            throw new IllegalArgumentException("argument cannot be null");
         Node nearest_node = root;
         int level = 0;
-        return nearest(root, p, root, level);
+        return nearest(root, p, root, level).p;
     }             // a nearest neighbor in the set to point p; null if the set is empty
-    private Point2D nearest(Node x, Point2D p, Node Nearest, int level){
+    private Node nearest(Node x, Point2D p, Node Nearest, int level){
+        if (x == null)
+            return Nearest;
         if (x.p.distanceTo(p) < Nearest.p.distanceTo(p))
             Nearest = x;
         level++;
         if (level % 2 != 0 && x.lb != null && x.p.x() > p.x()){
-            Point2D Near = nearest(x.lb, p, Nearest, level);
-            if (x.rt == null || Near.distanceTo(p) < x.rt.rect.distanceTo(p))
+            Node Near = nearest(x.lb, p, Nearest, level);
+            if (x.rt == null || Near.p.distanceTo(p) < x.rt.rect.distanceTo(p))
                 return Near;
             else
-                return nearest(x.rt, p, Nearest, level);
+                return nearest(x.rt, p, Near, level);
         }
-        else if (level % 2 != 0 && x.rt != null && x.p.x() < p.x()){
-            Point2D Near = nearest(x.rt, p, Nearest, level);
-            if (x.lb == null || Near.distanceTo(p) < x.lb.rect.distanceTo(p))
+        else if (level % 2 != 0 && x.rt != null && x.p.x() <= p.x()){
+            Node Near = nearest(x.rt, p, Nearest, level);
+            if (x.lb == null || Near.p.distanceTo(p) < x.lb.rect.distanceTo(p))
                 return Near;
             else
-                return nearest(x.lb, p, Nearest, level);
+                return nearest(x.lb, p, Near, level);
         }
         else if (level % 2 == 0 && x.lb != null && x.p.y() > p.y()){
-            Point2D Near = nearest(x.lb, p, Nearest, level);
-            if (x.rt == null || Near.distanceTo(p) < x.rt.rect.distanceTo(p))
+            Node Near = nearest(x.lb, p, Nearest, level);
+            if (x.rt == null || Near.p.distanceTo(p) < x.rt.rect.distanceTo(p))
                 return Near;
             else
-                return nearest(x.rt, p, Nearest, level);
+                return nearest(x.rt, p, Near, level);
         }
-        else if (level % 2 == 0 && x.rt != null && x.p.y() < p.y()){
-            Point2D Near = nearest(x.rt, p, Nearest, level);
-            if (x.lb == null || Near.distanceTo(p) < x.lb.rect.distanceTo(p))
+        else if (level % 2 == 0 && x.rt != null && x.p.y() <= p.y()){
+            Node Near = nearest(x.rt, p, Nearest, level);
+            if (x.lb == null || Near.p.distanceTo(p) < x.lb.rect.distanceTo(p))
                 return Near;
             else
-                return nearest(x.lb, p, Nearest, level);
+                return nearest(x.lb, p, Near, level);
         }
         else
-            return Nearest.p;
+            return Nearest;
     }
     public static void main(String[] args){
         KdTree kdtree = new KdTree();
@@ -169,16 +208,22 @@ public class KdTree {
             Point2D p = new Point2D(x,y);
             kdtree.insert(p);
         }
-        double x = 0.08;
-        double y = 0.610;
+        kdtree.draw();
+        double x = 0.885;
+        double y = 0.444;
         Point2D Point = new Point2D(x,y);
         Point2D nearest_point = kdtree.nearest(Point);
         StdOut.println(nearest_point.x());
         StdOut.println(nearest_point.y());
+        StdOut.println(nearest_point.distanceTo(Point));
+        /*
         RectHV Rect = new RectHV(0.3,0.4,0.425,0.8);
+
         for (Point2D p : kdtree.range(Rect)){
             StdOut.println(p.x());
             StdOut.println(p.y());
         }
+
+         */
     }                  // unit testing of the methods (optional)
 }

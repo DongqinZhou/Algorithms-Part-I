@@ -1,4 +1,10 @@
-import edu.princeton.cs.algs4.*;
+import edu.princeton.cs.algs4.In;
+import edu.princeton.cs.algs4.Point2D;
+import edu.princeton.cs.algs4.RectHV;
+import edu.princeton.cs.algs4.SET;
+
+import edu.princeton.cs.algs4.StdOut;
+
 
 import java.util.ArrayList;
 
@@ -19,10 +25,7 @@ public class PointSET {
             throw new IllegalArgumentException("argument cannot be null");
         return set.contains(p);
     }            // does the set contain point p?
-    public              void draw(){
-        for (Point2D p : set)
-            StdDraw.point(p.x(),p.y());
-    }                         // draw all points to standard draw
+    public              void draw(){    }                         // draw all points to standard draw
     public Iterable<Point2D> range(RectHV rect){
         if (rect == null)
             throw new IllegalArgumentException("argument cannot be null");
@@ -45,6 +48,7 @@ public class PointSET {
     }             // a nearest neighbor in the set to point p; null if the set is empty
 
     public static void main(String[] args){
+        /*
         PointSET pset = new PointSET();
         In in = new In(args[0]);
         for (int i = 0; i < 10; i++){
@@ -53,10 +57,7 @@ public class PointSET {
             Point2D p = new Point2D(x,y);
             pset.insert(p);
         }
-        //pset.draw();
-        double x = 0.8;
-        double y = 0.2;
-        Point2D Point = new Point2D(x,y);
-        Point2D nearest_point = pset.nearest(Point);
+        StdOut.println(pset.size());
+        */
     }                  // unit testing of the methods (optional)
 }
