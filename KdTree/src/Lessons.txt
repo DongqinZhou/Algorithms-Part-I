@@ -1,0 +1,5 @@
+1. Recursion is difficult to implement. Be patient to debug it.
+2. Use a minimal working example for debugging.
+3. Mastered tree implementation and recursion.
+4. Use private helper function. Don't know why but it looks elegant.
+5. Do not be afraid of the freedom given by independent coding. If you need any variable, create it.
